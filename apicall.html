@@ -1,0 +1,58 @@
+<html>
+    <head>
+        <script>
+            window.onload = function() {
+                
+                var url = 'https://api.publicapis.org/entries?category=animals&https=true';
+                var size;
+                var entries = [];
+                var counter=0;
+                fetch(url)
+                .then((res) => {
+                    if(res.status===200) {
+                        return Promise.resolve(res);
+                    } else {
+                        return Promise.reject(new Error(res.statusText))
+                    }
+                })
+                .then((response) => {
+                    return response.json()
+                })
+                .then((data) => {
+                    var htmltxt = '';
+                    entries = data.entries;
+                    size = data.entries.length;
+                    document.getElementById('maintext').innerHTML 
+                        = '<h4>'+entries[counter].API+'</h4><p>'+entries[counter].Description+'</p>';
+                    
+                }).catch((error)=> {
+                    console.log('Request failed', error);
+                });
+                function updateText(v) {
+                    if(v==='+'){
+                        if(counter+1>=size) 
+                            counter=0;
+                        else
+                            counter++;
+                    } else if(v==='-') {
+                        if(counter<=0) 
+                            counter=size-1;
+                        else
+                            counter--;
+                    }
+                    document.getElementById('maintext').innerHTML 
+                        = '<h4>'+entries[counter].API+'</h4><p>'+entries[counter].Description+'</p>';
+                }
+                document.getElementById("btnplus").onclick = function(e) {
+                    updateText(e.target.innerText)
+                }
+                document.getElementById("btnminus").onclick = function(e) {
+                    updateText(e.target.innerText)
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div><button class="btn" id="btnplus">+</button><span id="maintext"></span><button class="btn" id="btnminus">-</button></div>
+    </body>
+</html>
